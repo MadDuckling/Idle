@@ -1,0 +1,57 @@
+html {
+  background-color: #181a1b;
+}
+div, h1, h2, h3 {
+  color: #e8e6e3;
+}
+
+
+.buttonRow div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  min-height: 35px;
+}
+
+
+.buildingPurchaseBtn {
+  width: 15em;
+  border-radius: 8px;
+  border: 1px solid white;
+  background-color: black;
+  cursor: default;
+}
+
+/*
+.buildingPurchaseBtn:hover {
+  background-color: black;
+}
+
+.buildingPurchaseBtn.buildingPurchaseBtnAvailable {
+  cursor: pointer;
+  background-color: grey;
+}
+
+.buildingPurchaseBtn.buildingPurchaseBtnAvailable:hover {
+  background-color: lightgrey;
+}
+*/
+
+.buildingText {
+  width: 22em;
+}
+
+
+button {
+  min-height: 30px;
+  color: white;
+  cursor: pointer;
+  background-color: black;
+  outline: none;
+}
+
+body button:hover,
+body button:active {
+  background-color: grey;
+}

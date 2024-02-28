@@ -16,7 +16,7 @@ var game = {
   init() {
     btnBuyCoin1.onclick = () => game.getCoin1();
     btnBuyCoin2.onclick = () => game.getCoin2();
-    btnBuyCoinUpgrade1.onclick = () => game.getCoinUpgrade1();
+    btnBuyCoinUpgrade1.onclick = () => game.getCoinMultiplier1();
   },
   /** everything that updates goes here */
   tick() {
@@ -38,8 +38,8 @@ var game = {
     elCoin2Cost.innerText = game.getCoin2Cost();
     elCoin2Count.innerText = data.coins.tier2Bought + data.coins.tier2Generated;
     
-    elCoinUpgrade1Container.hidden = data.coins.tier1Multiplier == 0 && !game.canGetCoinUpgrade1();
-    elCoinUpgrade1Cost.innerText = game.getCoinUpgrade1Cost();
+    elCoinUpgrade1Container.hidden = data.coins.tier1Multiplier == 0 && !game.canGetCoinMultiplier1();
+    elCoinUpgrade1Cost.innerText = game.getCoinMultiplier1Cost();
     elCoinUpgrade1Count.innerText = data.coins.tier1Multiplier;
   },
 
@@ -71,15 +71,15 @@ var game = {
     game.updateDisplay();
   },
 
-  getCoinUpgrade1Cost() {
+  getCoinMultiplier1Cost() {
     return Math.round(250 * Math.pow(1.2, data.coins.tier1Multiplier));
   },
-  canGetCoinUpgrade1() {
-    return data.coins.amount >= game.getCoinUpgrade1Cost();
+  canGetCoinMultiplier1() {
+    return data.coins.amount >= game.getCoinMultiplier1Cost();
   },
-  getCoinUpgrade1() {
-    if (game.canGetCoinUpgrade1()) {
-      data.coins.amount -= game.getCoinUpgrade1Cost();
+  getCoinMultiplier1() {
+    if (game.canGetCoinMultiplier1()) {
+      data.coins.amount -= game.getCoinMultiplier1Cost();
       data.coins.tier1Multiplier++;
     }
     game.updateDisplay();
