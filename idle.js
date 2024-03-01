@@ -1,13 +1,13 @@
 /** everything that saves goes here */
 var data = {
   coins: {
-    amount: 1000000,
+    amount: 1000,
     tier1Bought: 0,
     tier1Generated: 0,
     tier2Bought: 0,
     tier2Generated: 0,
-  
-    tier1Multiplier: 0,
+
+    tier1Multiplier: 1,
   },
 };
 /** everything that is function goes here */
@@ -20,27 +20,39 @@ var game = {
   },
   /** everything that updates goes here */
   tick() {
-    data.coins.amount += (data.coins.tier1Bought + data.coins.tier1Generated) * (1.5 ^ data.coins.tier1Multiplier);
+    data.coins.amount += (data.coins.tier1Bought + data.coins.tier1Generated) * data.coins.tier1Multiplier;
     data.coins.tier1Generated += data.coins.tier2Bought + data.coins.tier2Generated;
 
     game.updateDisplay();
   },
   /** everything that draws goes here */
   updateDisplay() {
+    ///Value Displays
+    //Coin amount display
     elCoins.innerText = data.coins.amount;
     elCoinGenAmount.innerText = (data.coins.tier1Bought + data.coins.tier1Generated) * data.coins.tier1Multiplier;
 
-    elCoin1Container.hidden = (data.coins.tier1Bought + data.coins.tier1Generated) == 0 && !game.canGetCoin1();
+    ///Generators and Upgrades
+    //Coin tier 1
     elCoin1Cost.innerText = game.getCoin1Cost();
     elCoin1Count.innerText = data.coins.tier1Bought + data.coins.tier1Generated;
+    //Button
+    btnBuyCoin1.disabled = !game.canGetCoin1();
+    btnBuyCoin1.className = game.canGetCoin1() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
 
-    elCoin2Container.hidden = (data.coins.tier2Bought + data.coins.tier2Generated) == 0 && !game.canGetCoin2();
+    //Coin tier 2
     elCoin2Cost.innerText = game.getCoin2Cost();
     elCoin2Count.innerText = data.coins.tier2Bought + data.coins.tier2Generated;
-    
-    elCoinUpgrade1Container.hidden = data.coins.tier1Multiplier == 0 && !game.canGetCoinMultiplier1();
+    //Button
+    btnBuyCoin2.disabled = !game.canGetCoin2();
+    btnBuyCoin2.className = game.canGetCoin2() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+
+    //Coin Multiplier 1
     elCoinUpgrade1Cost.innerText = game.getCoinMultiplier1Cost();
-    elCoinUpgrade1Count.innerText = data.coins.tier1Multiplier;
+    elCoinUpgrade1Count.innerText = data.coins.tier1Multiplier - 1;
+    //Button
+    btnBuyCoinUpgrade1.disabled = !game.canGetCoinMultiplier1();
+    btnBuyCoinUpgrade1.className = game.canGetCoinMultiplier1() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
   },
 
   getCoin1Cost() {

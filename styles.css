@@ -5,6 +5,19 @@ div, h1, h2, h3 {
   color: #e8e6e3;
 }
 
+button {
+  min-height: 30px;
+  color: white;
+  cursor: pointer;
+  background-color: black;
+  outline: none;
+}
+
+body button:hover,
+body button:active {
+  cursor: pointer;
+  background-color: grey;
+}
 
 .buttonRow div {
   display: flex;
@@ -23,35 +36,22 @@ div, h1, h2, h3 {
   cursor: default;
 }
 
-/*
+
 .buildingPurchaseBtn:hover {
+  cursor: default;
   background-color: black;
 }
 
-.buildingPurchaseBtn.buildingPurchaseBtnAvailable {
+.buildingPurchaseBtn.available {
   cursor: pointer;
   background-color: grey;
 }
 
-.buildingPurchaseBtn.buildingPurchaseBtnAvailable:hover {
+.buildingPurchaseBtn.available:hover {
   background-color: lightgrey;
 }
-*/
+
 
 .buildingText {
   width: 22em;
-}
-
-
-button {
-  min-height: 30px;
-  color: white;
-  cursor: pointer;
-  background-color: black;
-  outline: none;
-}
-
-body button:hover,
-body button:active {
-  background-color: grey;
 }
