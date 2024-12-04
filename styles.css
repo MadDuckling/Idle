@@ -19,6 +19,11 @@ body button:active {
   background-color: grey;
 }
 
+.buyModeButton.active {
+  background-color: #4caf50;
+  color: white;
+}
+
 .buttonRow div {
   display: flex;
   justify-content: flex-start;

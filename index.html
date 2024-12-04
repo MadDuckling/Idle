@@ -5,12 +5,18 @@
   <head>
     <h1>The Idle game</h1>
     <div id="elCoinsContainer"> Coins: <span id="elCoins"></span> </div>
+    <div id="elCoinGenAmountContainer"> CPS: <span id="elCoinGenAmount"></span></div>
     <br>
     <button style="float: right;" onclick="game.clearSave()"> Reset game </button>
+    <div>
+      <button id="btnBuyMode1x" class="buyModeButton active">1x</button>
+      <button id="btnBuyMode5x" class="buyModeButton">5x</button>
+      <button id="btnBuyMode25x" class="buyModeButton">25x</button>
+      <button id="btnBuyModeMax" class="buyModeButton">MAX</button>
+    </div>
   </head>
 
   <body>
-    <div id="elCoinGenAmountContainer"> Coins per second: <span id="elCoinGenAmount"></span></div>
     <br>
     <div class="buttonRow">
       <div>
