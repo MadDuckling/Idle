@@ -3,11 +3,13 @@ var data = {
   coins: {
     buyMode: 1,
 
-    amount: 1000,
+    amount: 5,
     tier1CoinBought: 0,
     tier1CoinGenerated: 0,
     tier2CoinBought: 0,
     tier2CoinGenerated: 0,
+    tier3CoinBought: 0,
+    tier3CoinGenerated: 0,
 
     tier1CoinMultiplier: 1,
   },
@@ -15,40 +17,54 @@ var data = {
 
 /** all buildings and upgrades goes here **/
 var items = {
-  tier1Coin: {
-    baseCost: 5,
-    growthFactor: 1.2,
-    boughtKey: 'tier1CoinBought',
-    generatedKey: 'tier1CoinGenerated',
-    displayElement: {
-      cost: elCoin1Cost,
-      bought: elCoin1Bought,
-      generated: elCoin1Generated,
-      button: btnBuyCoin1,
-    }
-  },
-  tier2Coin: {
-    baseCost: 100,
-    growthFactor: 1.2,
-    boughtKey: 'tier2CoinBought',
-    generatedKey: 'tier2CoinGenerated',
-    displayElement: {
-      cost: elCoin2Cost,
-      bought: elCoin2Bought,
-      generated: elCoin2Generated,
-      button: btnBuyCoin2,
-    }
-  },
-  tier1CoinMultiplier: {
-    baseCost: 300,
-    growthFactor: 1.5,
-    boughtKey: 'tier1CoinMultiplier',
-    displayElement: {
-      cost: elCoinUpgrade1Cost,
-      bought: elCoinUpgrade1Bought,
-      generated: elCoinUpgrade1Generated = 0,
-      button: btnBuyCoinUpgrade1,
-    }
+  coins: {
+    tier1: {
+      baseCost: 5,
+      growthFactor: 1.1,
+      boughtKey: 'tier1CoinBought',
+      generatedKey: 'tier1CoinGenerated',
+      displayElement: {
+        cost: elCoin1Cost,
+        bought: elCoin1Bought,
+        generated: elCoin1Generated,
+        button: btnBuyCoin1,
+      }
+    },
+    tier2: {
+      baseCost: 100,
+      growthFactor: 1.2,
+      boughtKey: 'tier2CoinBought',
+      generatedKey: 'tier2CoinGenerated',
+      displayElement: {
+        cost: elCoin2Cost,
+        bought: elCoin2Bought,
+        generated: elCoin2Generated,
+        button: btnBuyCoin2,
+      }
+    },
+    tier3: {
+      baseCost: 500,
+      growthFactor: 1.3,
+      boughtKey: 'tier3CoinBought',
+      generatedKey: 'tier3CoinGenerated',
+      displayElement: {
+        cost: elCoin3Cost,
+        bought: elCoin3Bought,
+        generated: elCoin3Generated,
+        button: btnBuyCoin3,
+      }
+    },
+    tier1Multiplier: {
+      baseCost: 300,
+      growthFactor: 1.5,
+      boughtKey: 'tier1CoinMultiplier',
+      displayElement: {
+        cost: elCoinUpgrade1Cost,
+        bought: elCoinUpgrade1Bought,
+        generated: elCoinUpgrade1Generated = 0,
+        button: btnBuyCoinUpgrade1,
+      }
+    },
   },
 };
 
@@ -59,10 +75,14 @@ var game = {
     btnBuyMode1x.onclick = () => game.setBuyMode(1);
     btnBuyMode5x.onclick = () => game.setBuyMode(5);
     btnBuyMode25x.onclick = () => game.setBuyMode(25);
+    
+    // Activate buy mode buttons from last save
+    document.querySelectorAll('.buyModeButton').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`#btnBuyMode${data.coins.buyMode === 'max' ? 'Max' : `${data.coins.buyMode}x`}`).classList.add('active');
 
     // Set the button actions for each item
-    Object.keys(items).forEach(itemKey => {
-      const item = items[itemKey];
+    Object.keys(items.coins).forEach(itemKey => {
+      const item = items.coins[itemKey];
       item.displayElement.button.onclick = () => game.buyItem(item);
     });
   },
@@ -107,24 +127,29 @@ var game = {
 
   /** everything that updates goes here */
   tick() {
+    // Update current coin amount
     data.coins.amount += (data.coins.tier1CoinBought + data.coins.tier1CoinGenerated) * data.coins.tier1CoinMultiplier;
+    
+    // Update building generating buildings
     data.coins.tier1CoinGenerated += data.coins.tier2CoinBought + data.coins.tier2CoinGenerated;
+    data.coins.tier2CoinGenerated += data.coins.tier3CoinBought + data.coins.tier3CoinGenerated;
 
     game.updateDisplay();
   },
 
   /** everything that draws goes here */
   updateDisplay() {
-    // Update coin amount and generation
+    // Update current coin amount
     elCoins.innerText = data.coins.amount;
+    // Update CPS
     elCoinGenAmount.innerText = (data.coins.tier1CoinBought + data.coins.tier1CoinGenerated) * data.coins.tier1CoinMultiplier;
 
-    // Update each item's display
-    Object.keys(items).forEach(itemKey => {
-      const item = items[itemKey];
+    // Update each items display
+    Object.keys(items.coins).forEach(itemKey => {
+      const item = items.coins[itemKey];
       item.displayElement.cost.innerText = game.getCost(item);
       item.displayElement.bought.innerText = data.coins[item.boughtKey]
-      item.displayElement.generated.innerText = data.coins[item.generatedKey]
+      item.displayElement.generated.innerText = data.coins[item.generatedKey] > 0 ? `( ${data.coins[item.generatedKey]} )` : "";
       
 
       item.displayElement.button.disabled = !game.canBuy(() => game.getCost(item));
