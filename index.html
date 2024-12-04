@@ -1,30 +1,33 @@
-<link rel="stylesheet" type="text/css" href="styles.css" />
+<!doctype html>
+<html lang="en">
+  <link rel="stylesheet" type="text/css" href="styles.css" />
 
-<head>
-  <h1>The Idle game</h1>
-  <div id="elCoinsContainer"> Coins: <span id="elCoins"></span> </div>
-  <br>
-  <button style="float: right;" onclick="game.clearSave()"> Reset game </button>
-</head>
-
-<body>
-  <div id="elCoinGenAmountContainer"> Coins per second: <span id="elCoinGenAmount"></span></div>
-  <br>
-  <div class="buttonRow">
-    <div>
-      <div class="buildingText" id="elCoin1Container"> Workers: <span id="elCoin1Count"></span> </div>
-      <button class="buildingPurchaseBtn" id="btnBuyCoin1">Cost: <span id="elCoin1Cost"></span> coins</button>
-    </div>
-    <div>
-      <div class="buildingText" id="elCoin2Container"> Offices: <span id="elCoin2Count"></span> </div>
-      <button class="buildingPurchaseBtn" id="btnBuyCoin2">Cost: <span id="elCoin2Cost"></span> coins</button>
-    </div>
+  <head>
+    <h1>The Idle game</h1>
+    <div id="elCoinsContainer"> Coins: <span id="elCoins"></span> </div>
     <br>
-    <div>
-      <div class="buildingText" id="elCoinUpgrade1Container"> Multipliers: <span id="elCoinUpgrade1Count"></span> </div>
-      <button class="buildingPurchaseBtn" id="btnBuyCoinUpgrade1"> Cost: <span id="elCoinUpgrade1Cost"></span> coins</button>
-    </div>
-  </div>
+    <button style="float: right;" onclick="game.clearSave()"> Reset game </button>
+  </head>
 
-  <script src="idle.js"></script>
-</body>
+  <body>
+    <div id="elCoinGenAmountContainer"> Coins per second: <span id="elCoinGenAmount"></span></div>
+    <br>
+    <div class="buttonRow">
+      <div>
+        <div class="buildingText" id="elCoin1Container"> Workers: <span id="elCoin1Count"></span> </div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoin1">Cost: <span id="elCoin1Cost"></span> coins</button>
+      </div>
+      <div>
+        <div class="buildingText" id="elCoin2Container"> Offices: <span id="elCoin2Count"></span> </div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoin2">Cost: <span id="elCoin2Cost"></span> coins</button>
+      </div>
+      <br>
+      <div>
+        <div class="buildingText" id="elCoinUpgrade1Container"> Multipliers: <span id="elCoinUpgrade1Count"></span> </div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoinUpgrade1"> Cost: <span id="elCoinUpgrade1Cost"></span> coins</button>
+      </div>
+    </div>
+
+    <script src="idle.js"></script>
+  </body>
+</html>

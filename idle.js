@@ -14,9 +14,9 @@ var data = {
 var game = {
   /** initialization goes here */
   init() {
-    btnBuyCoin1.onclick = () => game.getCoin1();
-    btnBuyCoin2.onclick = () => game.getCoin2();
-    btnBuyCoinUpgrade1.onclick = () => game.getCoinMultiplier1();
+    btnBuyCoin1.onclick = () => game.buyItem(5, 1.2, 'tier1Bought');
+    btnBuyCoin2.onclick = () => game.buyItem(100, 1.2, 'tier2Bought');
+    btnBuyCoinUpgrade1.onclick = () => game.buyItem(250, 1.2, 'tier1Multiplier');
   },
   /** everything that updates goes here */
   tick() {
@@ -34,68 +34,48 @@ var game = {
 
     ///Generators and Upgrades
     //Coin tier 1
-    elCoin1Cost.innerText = game.getCoin1Cost();
+    elCoin1Cost.innerText = game.getCost(5, 1.2, data.coins.tier1Bought);
     elCoin1Count.innerText = data.coins.tier1Bought + data.coins.tier1Generated;
     //Button
-    btnBuyCoin1.disabled = !game.canGetCoin1();
-    btnBuyCoin1.className = game.canGetCoin1() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+    btnBuyCoin1.disabled = !game.canBuy(() => game.getCost(5, 1.2, data.coins.tier1Bought));
+    btnBuyCoin1.className = game.canBuy(() => game.getCost(5, 1.2, data.coins.tier1Bought)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
 
     //Coin tier 2
-    elCoin2Cost.innerText = game.getCoin2Cost();
+    elCoin2Cost.innerText = game.getCost(100, 1.2, data.coins.tier2Bought);
     elCoin2Count.innerText = data.coins.tier2Bought + data.coins.tier2Generated;
     //Button
-    btnBuyCoin2.disabled = !game.canGetCoin2();
-    btnBuyCoin2.className = game.canGetCoin2() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+    btnBuyCoin2.disabled = !game.canBuy(() => game.getCost(100, 1.2, data.coins.tier2Bought));
+    btnBuyCoin2.className = game.canBuy(() => game.getCost(100, 1.2, data.coins.tier2Bought)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";  
 
     //Coin Multiplier 1
-    elCoinUpgrade1Cost.innerText = game.getCoinMultiplier1Cost();
+    elCoinUpgrade1Cost.innerText = game.getCost(250, 1.2, data.coins.tier1Multiplier);
     elCoinUpgrade1Count.innerText = data.coins.tier1Multiplier - 1;
     //Button
-    btnBuyCoinUpgrade1.disabled = !game.canGetCoinMultiplier1();
-    btnBuyCoinUpgrade1.className = game.canGetCoinMultiplier1() ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+    btnBuyCoinUpgrade1.disabled = !game.canBuy(() => game.getCost(250, 1.2, data.coins.tier1Multiplier));
+    btnBuyCoinUpgrade1.className = game.canBuy(() => game.getCost(250, 1.2, data.coins.tier1Multiplier)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";  
+
   },
 
-  getCoin1Cost() {
-    return Math.round(5 * Math.pow(1.2, data.coins.tier1Bought));
+  //Calc if button is clickable
+  canBuy(costFunction, amount = data.coins.amount) {
+    return amount >= costFunction();
   },
-  canGetCoin1() {
-    return data.coins.amount >= game.getCoin1Cost();
+  //Calc cost of item
+  getCost(baseCost, growthFactor, coinsBought) {
+    return Math.round(baseCost * Math.pow(growthFactor, coinsBought));
   },
-  getCoin1() {
-    if (game.canGetCoin1()) {
-      data.coins.amount -= game.getCoin1Cost();
-      data.coins.tier1Bought++;
+  //Calc buying said item
+  buyItem(baseCost, growthFactor, coinsBoughtKey) {
+    const cost = game.getCost(baseCost, growthFactor, data.coins[coinsBoughtKey]);
+    if (data.coins.amount >= cost) {
+      data.coins.amount -= cost;
+      data.coins[coinsBoughtKey]++;
+      game.updateDisplay();
     }
-    game.updateDisplay();
   },
 
-  getCoin2Cost() {
-    return Math.round(100 * Math.pow(1.2, data.coins.tier2Bought));
-  },
-  canGetCoin2() {
-    return data.coins.amount >= game.getCoin2Cost();
-  },
-  getCoin2() {
-    if (game.canGetCoin2()) {
-      data.coins.amount -= game.getCoin2Cost();
-      data.coins.tier2Bought++;
-    }
-    game.updateDisplay();
-  },
 
-  getCoinMultiplier1Cost() {
-    return Math.round(250 * Math.pow(1.2, data.coins.tier1Multiplier));
-  },
-  canGetCoinMultiplier1() {
-    return data.coins.amount >= game.getCoinMultiplier1Cost();
-  },
-  getCoinMultiplier1() {
-    if (game.canGetCoinMultiplier1()) {
-      data.coins.amount -= game.getCoinMultiplier1Cost();
-      data.coins.tier1Multiplier++;
-    }
-    game.updateDisplay();
-  },
+
 
   // theese are not perfect, but they are simple 
   save(savename = 'idleSave') {
@@ -117,4 +97,5 @@ var game = {
   },
 }
 game.load();
+game.init();
 game.start();
