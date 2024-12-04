@@ -12,7 +12,6 @@
       <button id="btnBuyMode1x" class="buyModeButton active">1x</button>
       <button id="btnBuyMode5x" class="buyModeButton">5x</button>
       <button id="btnBuyMode25x" class="buyModeButton">25x</button>
-      <button id="btnBuyModeMax" class="buyModeButton">MAX</button>
     </div>
   </head>
 
@@ -20,17 +19,23 @@
     <br>
     <div class="buttonRow">
       <div>
-        <div class="buildingText" id="elCoin1Container"> Workers: <span id="elCoin1Count"></span> </div>
-        <button class="buildingPurchaseBtn" id="btnBuyCoin1">Cost: <span id="elCoin1Cost"></span> coins</button>
+        <div class="buildingText"> Workers: <span id="elCoin1Bought"></span> (<span id="elCoin1Generated"></span>)</div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoin1">
+          Cost: <span id="elCoin1Cost"></span> coins 
+        </button>
       </div>
       <div>
-        <div class="buildingText" id="elCoin2Container"> Offices: <span id="elCoin2Count"></span> </div>
-        <button class="buildingPurchaseBtn" id="btnBuyCoin2">Cost: <span id="elCoin2Cost"></span> coins</button>
+        <div class="buildingText"> Offices: <span id="elCoin2Bought"></span> (<span id="elCoin2Generated"></span>)</div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoin2">
+          Cost: <span id="elCoin2Cost"></span> coins 
+        </button>
       </div>
       <br>
       <div>
-        <div class="buildingText" id="elCoinUpgrade1Container"> Multipliers: <span id="elCoinUpgrade1Count"></span> </div>
-        <button class="buildingPurchaseBtn" id="btnBuyCoinUpgrade1"> Cost: <span id="elCoinUpgrade1Cost"></span> coins</button>
+        <div class="buildingText"> Multiplier: <span id="elCoinUpgrade1Bought"></span> </div>
+        <button class="buildingPurchaseBtn" id="btnBuyCoinUpgrade1">
+          Cost: <span id="elCoinUpgrade1Cost"></span> coins
+        </button>
       </div>
     </div>
 

@@ -4,26 +4,67 @@ var data = {
     buyMode: 1,
 
     amount: 1000,
-    tier1Bought: 0,
-    tier1Generated: 0,
-    tier2Bought: 0,
-    tier2Generated: 0,
+    tier1CoinBought: 0,
+    tier1CoinGenerated: 0,
+    tier2CoinBought: 0,
+    tier2CoinGenerated: 0,
 
-    tier1Multiplier: 1,
+    tier1CoinMultiplier: 1,
   },
 };
+
+/** all buildings and upgrades goes here **/
+var items = {
+  tier1Coin: {
+    baseCost: 5,
+    growthFactor: 1.2,
+    boughtKey: 'tier1CoinBought',
+    generatedKey: 'tier1CoinGenerated',
+    displayElement: {
+      cost: elCoin1Cost,
+      bought: elCoin1Bought,
+      generated: elCoin1Generated,
+      button: btnBuyCoin1,
+    }
+  },
+  tier2Coin: {
+    baseCost: 100,
+    growthFactor: 1.2,
+    boughtKey: 'tier2CoinBought',
+    generatedKey: 'tier2CoinGenerated',
+    displayElement: {
+      cost: elCoin2Cost,
+      bought: elCoin2Bought,
+      generated: elCoin2Generated,
+      button: btnBuyCoin2,
+    }
+  },
+  tier1CoinMultiplier: {
+    baseCost: 300,
+    growthFactor: 1.5,
+    boughtKey: 'tier1CoinMultiplier',
+    displayElement: {
+      cost: elCoinUpgrade1Cost,
+      bought: elCoinUpgrade1Bought,
+      generated: elCoinUpgrade1Generated = 0,
+      button: btnBuyCoinUpgrade1,
+    }
+  },
+};
+
 /** everything that is function goes here */
 var game = {
-  /** initialization goes here */
   init() {
+    // Set the buy mode for each button
     btnBuyMode1x.onclick = () => game.setBuyMode(1);
     btnBuyMode5x.onclick = () => game.setBuyMode(5);
     btnBuyMode25x.onclick = () => game.setBuyMode(25);
-    btnBuyModeMax.onclick = () => game.setBuyMode('max'); // Special case for MAX
 
-    btnBuyCoin1.onclick = () => game.buyItem(5, 1.2, 'tier1Bought');
-    btnBuyCoin2.onclick = () => game.buyItem(100, 1.2, 'tier2Bought');
-    btnBuyCoinUpgrade1.onclick = () => game.buyItem(250, 1.2, 'tier1Multiplier');
+    // Set the button actions for each item
+    Object.keys(items).forEach(itemKey => {
+      const item = items[itemKey];
+      item.displayElement.button.onclick = () => game.buyItem(item);
+    });
   },
 
   // Change buy mode
@@ -42,98 +83,53 @@ var game = {
     return amount >= costFunction();
   },
   // Calc cost of item
-  getCost(baseCost, growthFactor, coinsBought) {
-    // Calculate the total cost based on the current buy mode
-    const buyMode = data.coins.buyMode;
-    if (buyMode === 'max') {
-      let totalCost = 0;
-      let tempCoinsBought = coinsBought;
-      let tempAmount = data.coins.amount;
+  getCost(item) {
+    const { baseCost, growthFactor, boughtKey } = item;
 
-      while (tempAmount >= Math.round(baseCost * Math.pow(growthFactor, tempCoinsBought))) {
-        const cost = Math.round(baseCost * Math.pow(growthFactor, tempCoinsBought));
-        totalCost += cost;
-        tempAmount -= cost;
-        tempCoinsBought++;
-      }
-      
-      return totalCost || Math.round(baseCost * Math.pow(growthFactor, coinsBought)); // Return single cost if no MAX purchase possible
-    } else {
-      let totalCost = 0;
-      for (let i = 0; i < buyMode; i++) {
-        totalCost += Math.round(baseCost * Math.pow(growthFactor, coinsBought + i));
-      }
-      return totalCost;
+    let totalCost = 0;
+    for (let i = 0; i < data.coins.buyMode; i++) {
+      totalCost += Math.round(baseCost * Math.pow(growthFactor, data.coins[boughtKey] + i));
     }
+    return totalCost;
   },
   // Calc buying said item
-  buyItem(baseCost, growthFactor, coinsBoughtKey) {
-    const buyMode = data.coins.buyMode;
-  
-    if (buyMode === 'max') {
-      let tempAmount = data.coins.amount;
-      let itemsBought = 0;
-  
-      // Buy as many items as possible
-      while (tempAmount >= Math.round(baseCost * Math.pow(growthFactor, data.coins[coinsBoughtKey]))) {
-        const cost = Math.round(baseCost * Math.pow(growthFactor, data.coins[coinsBoughtKey]));
-        tempAmount -= cost;
-        itemsBought++;
-        data.coins[coinsBoughtKey]++;
-      }
-  
-      // Update the amount after purchasing
-      data.coins.amount -= (data.coins.amount - tempAmount);
-    } else {
-      // Buy fixed number of items
-      const cost = game.getCost(baseCost, growthFactor, data.coins[coinsBoughtKey]);
-      if (data.coins.amount >= cost) {
-        data.coins.amount -= cost;
-        data.coins[coinsBoughtKey] += buyMode;
-      }
+  buyItem(item) {
+    const cost = game.getCost(item);
+
+    if (data.coins.amount >= cost) {
+      data.coins.amount -= cost;
+      data.coins[item.boughtKey] += data.coins.buyMode;
+
+      game.updateDisplay();
     }
-  
-    game.updateDisplay();
   },
   
 
   /** everything that updates goes here */
   tick() {
-    data.coins.amount += (data.coins.tier1Bought + data.coins.tier1Generated) * data.coins.tier1Multiplier;
-    data.coins.tier1Generated += data.coins.tier2Bought + data.coins.tier2Generated;
+    data.coins.amount += (data.coins.tier1CoinBought + data.coins.tier1CoinGenerated) * data.coins.tier1CoinMultiplier;
+    data.coins.tier1CoinGenerated += data.coins.tier2CoinBought + data.coins.tier2CoinGenerated;
 
     game.updateDisplay();
   },
 
   /** everything that draws goes here */
   updateDisplay() {
-    /// Value Displays
-    // Coin amount display
+    // Update coin amount and generation
     elCoins.innerText = data.coins.amount;
-    elCoinGenAmount.innerText = (data.coins.tier1Bought + data.coins.tier1Generated) * data.coins.tier1Multiplier;
+    elCoinGenAmount.innerText = (data.coins.tier1CoinBought + data.coins.tier1CoinGenerated) * data.coins.tier1CoinMultiplier;
 
-    /// Generators and Upgrades
-    // Coin tier 1
-    elCoin1Cost.innerText = game.getCost(5, 1.2, data.coins.tier1Bought);
-    elCoin1Count.innerText = data.coins.tier1Bought + data.coins.tier1Generated;
-    // Button
-    btnBuyCoin1.disabled = !game.canBuy(() => game.getCost(5, 1.2, data.coins.tier1Bought));
-    btnBuyCoin1.className = game.canBuy(() => game.getCost(5, 1.2, data.coins.tier1Bought)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+    // Update each item's display
+    Object.keys(items).forEach(itemKey => {
+      const item = items[itemKey];
+      item.displayElement.cost.innerText = game.getCost(item);
+      item.displayElement.bought.innerText = data.coins[item.boughtKey]
+      item.displayElement.generated.innerText = data.coins[item.generatedKey]
+      
 
-    // Coin tier 2
-    elCoin2Cost.innerText = game.getCost(100, 1.2, data.coins.tier2Bought);
-    elCoin2Count.innerText = data.coins.tier2Bought + data.coins.tier2Generated;
-    // Button
-    btnBuyCoin2.disabled = !game.canBuy(() => game.getCost(100, 1.2, data.coins.tier2Bought));
-    btnBuyCoin2.className = game.canBuy(() => game.getCost(100, 1.2, data.coins.tier2Bought)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";  
-
-    // Coin Multiplier 1
-    elCoinUpgrade1Cost.innerText = game.getCost(250, 1.2, data.coins.tier1Multiplier);
-    elCoinUpgrade1Count.innerText = data.coins.tier1Multiplier - 1;
-    // Button
-    btnBuyCoinUpgrade1.disabled = !game.canBuy(() => game.getCost(250, 1.2, data.coins.tier1Multiplier));
-    btnBuyCoinUpgrade1.className = game.canBuy(() => game.getCost(250, 1.2, data.coins.tier1Multiplier)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";  
-
+      item.displayElement.button.disabled = !game.canBuy(() => game.getCost(item));
+      item.displayElement.button.className = game.canBuy(() => game.getCost(item)) ? "buildingPurchaseBtn available" : "buildingPurchaseBtn";
+    });
   },
 
 
